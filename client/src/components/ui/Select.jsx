@@ -12,7 +12,7 @@ export const Select = forwardRef(
       <select
         ref={ref}
         className={cn(
-          "h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:border-slate-500 dark:focus:ring-slate-800",
+          "glass-surface h-11 w-full rounded-2xl px-3 text-sm text-slate-950 outline-none transition focus:ring-2 focus:ring-cyan-300/40 dark:text-slate-100 dark:focus:ring-cyan-400/30",
           error &&
             "border-rose-300 focus:border-rose-400 focus:ring-rose-100 dark:border-rose-800",
           className,

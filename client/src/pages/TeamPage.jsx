@@ -124,10 +124,29 @@ export const TeamPage = () => {
     return <LoadingSpinner label="Loading team" />;
   }
 
+  const selectedProjectCount = selectedProjectMembers.length;
+
   return (
     <div className="space-y-5">
       {isAdmin ? (
-        <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+        <section className="glass-panel rounded-[28px] p-5">
+          <div className="mb-4 flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-cyan-700 dark:text-cyan-300">
+                Team
+              </p>
+              <h2 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950 dark:text-white">
+                Add and remove members per project.
+              </h2>
+              <p className="mt-2 max-w-2xl text-sm text-slate-500 dark:text-slate-400">
+                Choose a project, manage access, and keep the assigned team in
+                sync with the workspace.
+              </p>
+            </div>
+            <span className="rounded-full border border-white/40 bg-white/75 px-3 py-1 text-sm font-medium text-slate-700 backdrop-blur dark:border-white/10 dark:bg-slate-950/40 dark:text-slate-200">
+              {selectedProjectCount} visible members
+            </span>
+          </div>
           <div className="grid gap-3 lg:grid-cols-[1fr_1fr_auto_auto] lg:items-end">
             <Select
               label="Project"
@@ -167,7 +186,7 @@ export const TeamPage = () => {
       ) : null}
 
       {isAdmin && selectedProject ? (
-        <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+        <section className="glass-panel rounded-[28px] p-5">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <div>
               <h2 className="text-base font-semibold text-slate-950 dark:text-white">
@@ -192,7 +211,7 @@ export const TeamPage = () => {
                 return (
                   <article
                     key={member._id}
-                    className="rounded-lg border border-slate-200 p-4 dark:border-slate-700"
+                    className="glass-surface rounded-[24px] p-4"
                   >
                     <div className="flex items-center gap-3">
                       <Avatar user={member} size="lg" />
@@ -241,7 +260,7 @@ export const TeamPage = () => {
         </section>
       ) : null}
 
-      <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+      <section className="glass-panel rounded-[28px] p-4">
         <Input
           label="Search team"
           placeholder="Name, email, or role"

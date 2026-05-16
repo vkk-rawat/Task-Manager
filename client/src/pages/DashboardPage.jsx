@@ -73,9 +73,51 @@ export const DashboardPage = () => {
   }
 
   const summary = dashboard?.summary || {};
+  const statusCounts = dashboard?.charts?.statusBreakdown || [];
+  const activeStatus = statusCounts.reduce((sum, item) => sum + item.value, 0);
 
   return (
     <div className="space-y-6">
+      <section className="glass-panel overflow-hidden rounded-[28px] p-5">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+          <div className="max-w-2xl">
+            <span className="inline-flex items-center rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-cyan-700 dark:text-cyan-300">
+              Workspace pulse
+            </span>
+            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 dark:text-white">
+              A clear overview of projects, progress, and overdue work.
+            </h2>
+            <p className="mt-2 max-w-xl text-sm leading-6 text-slate-500 dark:text-slate-400">
+              Track delivery across every project with real-time updates, status
+              distribution, and weekly productivity charts.
+            </p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            {[
+              { label: "Projects", value: summary.totalProjects || 0 },
+              { label: "Active tasks", value: activeStatus || 0 },
+              {
+                label: "Completion rate",
+                value: `${summary.completionRate || 0}%`,
+              },
+              { label: "Overdue", value: summary.overdueTasks || 0 },
+            ].map((item) => (
+              <div
+                key={item.label}
+                className="rounded-2xl border border-white/40 bg-white/75 px-4 py-3 backdrop-blur dark:border-white/10 dark:bg-slate-950/40"
+              >
+                <p className="text-xs uppercase tracking-[0.24em] text-slate-400">
+                  {item.label}
+                </p>
+                <p className="mt-1 text-2xl font-semibold text-slate-950 dark:text-white">
+                  {item.value}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <StatCard
           title="Projects"
@@ -109,7 +151,7 @@ export const DashboardPage = () => {
       </section>
 
       <section className="grid gap-4 lg:grid-cols-[1.5fr_1fr]">
-        <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+        <div className="glass-panel rounded-[28px] p-5">
           <div className="mb-4 flex items-center justify-between">
             <div>
               <h2 className="text-base font-semibold text-slate-950 dark:text-white">
@@ -145,7 +187,7 @@ export const DashboardPage = () => {
           </div>
         </div>
 
-        <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+        <div className="glass-panel rounded-[28px] p-5">
           <h2 className="text-base font-semibold text-slate-950 dark:text-white">
             Status mix
           </h2>
@@ -177,7 +219,7 @@ export const DashboardPage = () => {
       </section>
 
       <section className="grid gap-4 lg:grid-cols-[1fr_1fr]">
-        <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+        <div className="glass-panel rounded-[28px] p-5">
           <h2 className="text-base font-semibold text-slate-950 dark:text-white">
             Priority distribution
           </h2>
@@ -194,7 +236,7 @@ export const DashboardPage = () => {
           </div>
         </div>
 
-        <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+        <div className="glass-panel rounded-[28px] p-5">
           <h2 className="text-base font-semibold text-slate-950 dark:text-white">
             Recent activity
           </h2>
@@ -232,7 +274,7 @@ export const DashboardPage = () => {
         </div>
       </section>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+      <section className="glass-panel rounded-[28px] p-5">
         <h2 className="text-base font-semibold text-slate-950 dark:text-white">
           Project progress
         </h2>
@@ -241,7 +283,7 @@ export const DashboardPage = () => {
             dashboard.projectProgress.map((project) => (
               <div
                 key={project._id}
-                className="rounded-lg border border-slate-200 p-4 dark:border-slate-700"
+                className="glass-surface rounded-[24px] p-4"
               >
                 <div className="mb-3 flex items-start justify-between gap-3">
                   <div className="min-w-0">
