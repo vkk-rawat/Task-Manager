@@ -1,0 +1,121 @@
+# ⚡ QUICK REFERENCE CARD
+
+## 🚀 ONE COMMAND TO RUN EVERYTHING
+
+### Windows
+```
+./start-docker.bat
+```
+
+### macOS/Linux
+```
+./start-docker.sh
+```
+
+### Manual (any OS)
+```
+docker-compose up --build
+```
+
+**Then open:** http://localhost:5000
+
+---
+
+## 📦 SINGLE ENVIRONMENT FILE: `.env.docker`
+
+```env
+NODE_ENV=development
+PORT=5000
+MONGO_URI=mongodb://mongo:27017/team-task-manager
+JWT_SECRET=your-dev-secret-key-change-this-in-production-min-24-chars
+JWT_EXPIRES_IN=7d
+FRONTEND_URL=http://localhost:5000
+RATE_LIMIT_WINDOW_MS=900000
+RATE_LIMIT_MAX=200
+```
+
+✅ That's ALL the environment variables you need!
+
+---
+
+## 🎯 WHAT GETS CREATED
+
+```
+Docker Container:
+  ✅ Frontend (React + Vite)
+  ✅ Backend (Express + Node)
+  
+MongoDB:
+  ✅ Database (separate container)
+```
+
+Access: http://localhost:5000
+
+---
+
+## 🛑 TO STOP
+
+```bash
+# Stop everything (keep database)
+docker-compose down
+
+# Stop everything (delete database)
+docker-compose down -v
+```
+
+---
+
+## 📊 FILES CREATED/CHANGED
+
+**New Files:**
+- ✅ Dockerfile
+- ✅ docker-compose.yml
+- ✅ .env.docker (single env file!)
+- ✅ .env.production
+- ✅ .dockerignore
+- ✅ start-docker.bat
+- ✅ start-docker.sh
+- ✅ railway.json
+
+**Modified Files:**
+- ✅ server/src/app.js (to serve frontend)
+
+---
+
+## 🐛 TROUBLESHOOTING
+
+| Problem | Solution |
+|---------|----------|
+| Docker not found | Install Docker Desktop |
+| Port 5000 in use | Edit docker-compose.yml: change 5000:5000 to 3000:5000 |
+| Database error | Check .env.docker has MONGO_URI |
+| Frontend not loading | Run: `docker-compose logs app` |
+| Want to rebuild | Run: `docker-compose build --no-cache` |
+
+---
+
+## ✨ KEY BENEFITS
+
+✅ **Single command** to run everything
+✅ **Single .env file** - no separate files
+✅ **One container** for frontend + backend
+✅ **Same setup** for local & production (Railway)
+✅ **No separate deployments**
+✅ **Lower costs** on Railway (one container vs two)
+
+---
+
+## 🚀 DEPLOY TO RAILWAY
+
+1. Push to GitHub
+2. Create Railway project
+3. Add MongoDB plugin
+4. Set env vars (from .env.production)
+5. Deploy!
+
+---
+
+## 📝 REMEMBER
+
+The single `.env.docker` file contains ALL variables needed for local development. 
+No need to manage multiple .env files!
