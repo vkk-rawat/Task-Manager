@@ -1,41 +1,41 @@
-import { format, formatDistanceToNowStrict, isPast, parseISO } from 'date-fns';
+import { format, formatDistanceToNowStrict, isPast, parseISO } from "date-fns";
 
-export const formatDate = (date, fallback = 'No date') => {
+export const formatDate = (date, fallback = "No date") => {
   if (!date) {
     return fallback;
   }
 
-  return format(new Date(date), 'MMM d, yyyy');
+  return format(new Date(date), "MMM d, yyyy");
 };
 
 export const formatDateTime = (date) => {
   if (!date) {
-    return '';
+    return "";
   }
 
-  return format(new Date(date), 'MMM d, yyyy, h:mm a');
+  return format(new Date(date), "MMM d, yyyy, h:mm a");
 };
 
 export const fromNow = (date) => {
   if (!date) {
-    return '';
+    return "";
   }
 
   return `${formatDistanceToNowStrict(new Date(date))} ago`;
 };
 
 export const isPastDue = (date, status) => {
-  if (!date || status === 'Done' || status === 'Completed') {
+  if (!date || status === "Done" || status === "Completed") {
     return false;
   }
 
   return isPast(parseISO(date));
 };
 
-export const initials = (name = '') =>
+export const initials = (name = "") =>
   name
-    .split(' ')
+    .split(" ")
     .filter(Boolean)
     .slice(0, 2)
     .map((part) => part[0]?.toUpperCase())
-    .join('') || 'U';
+    .join("") || "U";

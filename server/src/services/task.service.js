@@ -1,5 +1,5 @@
-import { Task } from '../models/Task.js';
-import { normalizeTaskStatus } from '../utils/constants.js';
+import { Task } from "../models/Task.js";
+import { normalizeTaskStatus } from "../utils/constants.js";
 
 export const refreshOverdueTasks = async (extraFilter = {}) => {
   const now = new Date();
@@ -7,25 +7,25 @@ export const refreshOverdueTasks = async (extraFilter = {}) => {
   return Task.updateMany(
     {
       ...extraFilter,
-      status: { $nin: ['Done', 'Completed', 'Overdue'] },
-      dueDate: { $lt: now }
+      status: { $nin: ["Done", "Completed", "Overdue"] },
+      dueDate: { $lt: now },
     },
-    { $set: { status: 'Overdue' } }
+    { $set: { status: "Overdue" } },
   );
 };
 
 export const populateTask = (query) =>
   query
-    .populate('assignedTo', 'name email role avatar')
-    .populate('assignedBy', 'name email role avatar')
-    .populate('project', 'title priority deadline members owner')
+    .populate("assignedTo", "name email role avatar")
+    .populate("assignedBy", "name email role avatar")
+    .populate("project", "title priority deadline members owner")
     .populate({
-      path: 'comments',
+      path: "comments",
       options: { sort: { createdAt: -1 } },
       populate: {
-        path: 'user',
-        select: 'name email role avatar'
-      }
+        path: "user",
+        select: "name email role avatar",
+      },
     });
 
 export const normalizeTaskDoc = (task) => {

@@ -1,5 +1,11 @@
-import { AlertTriangle, CheckCircle2, FolderKanban, ListTodo, TrendingUp } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import {
+  AlertTriangle,
+  CheckCircle2,
+  FolderKanban,
+  ListTodo,
+  TrendingUp,
+} from "lucide-react";
+import { useEffect, useState } from "react";
 import {
   Area,
   AreaChart,
@@ -12,28 +18,28 @@ import {
   ResponsiveContainer,
   Tooltip,
   XAxis,
-  YAxis
-} from 'recharts';
-import { toast } from 'sonner';
-import { ProgressBar } from '../components/ui/ProgressBar';
-import { LoadingSpinner } from '../components/ui/LoadingSpinner';
-import { StatCard } from '../components/ui/StatCard';
-import { usePageTitle } from '../hooks/usePageTitle';
-import { api, getErrorMessage } from '../services/api';
-import { fromNow, formatDate } from '../utils/formatters';
-import { useSocket } from '../contexts/SocketContext';
+  YAxis,
+} from "recharts";
+import { toast } from "sonner";
+import { ProgressBar } from "../components/ui/ProgressBar";
+import { LoadingSpinner } from "../components/ui/LoadingSpinner";
+import { StatCard } from "../components/ui/StatCard";
+import { usePageTitle } from "../hooks/usePageTitle";
+import { api, getErrorMessage } from "../services/api";
+import { fromNow, formatDate } from "../utils/formatters";
+import { useSocket } from "../contexts/SocketContext";
 
-const COLORS = ['#0f172a', '#0284c7', '#7c3aed', '#10b981', '#e11d48'];
+const COLORS = ["#0f172a", "#0284c7", "#7c3aed", "#10b981", "#e11d48"];
 
 export const DashboardPage = () => {
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
   const { socket } = useSocket();
-  usePageTitle('Dashboard');
+  usePageTitle("Dashboard");
 
   const fetchDashboard = async () => {
     try {
-      const { data } = await api.get('/dashboard');
+      const { data } = await api.get("/dashboard");
       setDashboard(data.data);
     } catch (error) {
       toast.error(getErrorMessage(error));
@@ -51,14 +57,14 @@ export const DashboardPage = () => {
       return undefined;
     }
 
-    socket.on('task:created', fetchDashboard);
-    socket.on('task:updated', fetchDashboard);
-    socket.on('activity:new', fetchDashboard);
+    socket.on("task:created", fetchDashboard);
+    socket.on("task:updated", fetchDashboard);
+    socket.on("activity:new", fetchDashboard);
 
     return () => {
-      socket.off('task:created', fetchDashboard);
-      socket.off('task:updated', fetchDashboard);
-      socket.off('activity:new', fetchDashboard);
+      socket.off("task:created", fetchDashboard);
+      socket.off("task:updated", fetchDashboard);
+      socket.off("activity:new", fetchDashboard);
     };
   }, [socket]);
 
@@ -71,19 +77,47 @@ export const DashboardPage = () => {
   return (
     <div className="space-y-6">
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-        <StatCard title="Projects" value={summary.totalProjects || 0} icon={FolderKanban} tone="sky" />
-        <StatCard title="Total tasks" value={summary.totalTasks || 0} icon={ListTodo} />
-        <StatCard title="Done" value={summary.completedTasks || 0} icon={CheckCircle2} tone="emerald" />
-        <StatCard title="Pending" value={summary.pendingTasks || 0} icon={TrendingUp} tone="amber" />
-        <StatCard title="Overdue" value={summary.overdueTasks || 0} icon={AlertTriangle} tone="rose" />
+        <StatCard
+          title="Projects"
+          value={summary.totalProjects || 0}
+          icon={FolderKanban}
+          tone="sky"
+        />
+        <StatCard
+          title="Total tasks"
+          value={summary.totalTasks || 0}
+          icon={ListTodo}
+        />
+        <StatCard
+          title="Done"
+          value={summary.completedTasks || 0}
+          icon={CheckCircle2}
+          tone="emerald"
+        />
+        <StatCard
+          title="Pending"
+          value={summary.pendingTasks || 0}
+          icon={TrendingUp}
+          tone="amber"
+        />
+        <StatCard
+          title="Overdue"
+          value={summary.overdueTasks || 0}
+          icon={AlertTriangle}
+          tone="rose"
+        />
       </section>
 
       <section className="grid gap-4 lg:grid-cols-[1.5fr_1fr]">
         <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
           <div className="mb-4 flex items-center justify-between">
             <div>
-              <h2 className="text-base font-semibold text-slate-950 dark:text-white">Weekly productivity</h2>
-              <p className="text-sm text-slate-500 dark:text-slate-400">{summary.completionRate || 0}% completion rate</p>
+              <h2 className="text-base font-semibold text-slate-950 dark:text-white">
+                Weekly productivity
+              </h2>
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                {summary.completionRate || 0}% completion rate
+              </p>
             </div>
           </div>
           <div className="h-72">
@@ -99,14 +133,22 @@ export const DashboardPage = () => {
                 <XAxis dataKey="date" tick={{ fontSize: 12 }} />
                 <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
                 <Tooltip />
-                <Area type="monotone" dataKey="completed" stroke="#10b981" fill="url(#completed)" strokeWidth={2} />
+                <Area
+                  type="monotone"
+                  dataKey="completed"
+                  stroke="#10b981"
+                  fill="url(#completed)"
+                  strokeWidth={2}
+                />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-          <h2 className="text-base font-semibold text-slate-950 dark:text-white">Status mix</h2>
+          <h2 className="text-base font-semibold text-slate-950 dark:text-white">
+            Status mix
+          </h2>
           <div className="mt-4 h-72">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -118,9 +160,14 @@ export const DashboardPage = () => {
                   outerRadius={90}
                   paddingAngle={3}
                 >
-                  {(dashboard?.charts?.statusBreakdown || []).map((entry, index) => (
-                    <Cell key={entry.name} fill={COLORS[index % COLORS.length]} />
-                  ))}
+                  {(dashboard?.charts?.statusBreakdown || []).map(
+                    (entry, index) => (
+                      <Cell
+                        key={entry.name}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ),
+                  )}
                 </Pie>
                 <Tooltip />
               </PieChart>
@@ -131,7 +178,9 @@ export const DashboardPage = () => {
 
       <section className="grid gap-4 lg:grid-cols-[1fr_1fr]">
         <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-          <h2 className="text-base font-semibold text-slate-950 dark:text-white">Priority distribution</h2>
+          <h2 className="text-base font-semibold text-slate-950 dark:text-white">
+            Priority distribution
+          </h2>
           <div className="mt-4 h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={dashboard?.charts?.priorityBreakdown || []}>
@@ -146,45 +195,74 @@ export const DashboardPage = () => {
         </div>
 
         <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-          <h2 className="text-base font-semibold text-slate-950 dark:text-white">Recent activity</h2>
+          <h2 className="text-base font-semibold text-slate-950 dark:text-white">
+            Recent activity
+          </h2>
           <div className="mt-4 space-y-3">
             {dashboard?.recentActivity?.length ? (
               dashboard.recentActivity.map((activity) => (
-                <div key={activity._id} className="flex items-start justify-between gap-4 border-b border-slate-100 pb-3 last:border-0 dark:border-slate-800">
+                <div
+                  key={activity._id}
+                  className="flex items-start justify-between gap-4 border-b border-slate-100 pb-3 last:border-0 dark:border-slate-800"
+                >
                   <div>
                     <p className="text-sm text-slate-700 dark:text-slate-200">
-                      <span className="font-medium">{activity.actor?.name}</span> {activity.action}
+                      <span className="font-medium">
+                        {activity.actor?.name}
+                      </span>{" "}
+                      {activity.action}
                     </p>
-                    <p className="text-xs text-slate-400">{activity.metadata?.title || activity.metadata?.projectTitle || 'Workspace update'}</p>
+                    <p className="text-xs text-slate-400">
+                      {activity.metadata?.title ||
+                        activity.metadata?.projectTitle ||
+                        "Workspace update"}
+                    </p>
                   </div>
-                  <span className="shrink-0 text-xs text-slate-400">{fromNow(activity.createdAt)}</span>
+                  <span className="shrink-0 text-xs text-slate-400">
+                    {fromNow(activity.createdAt)}
+                  </span>
                 </div>
               ))
             ) : (
-              <p className="py-8 text-center text-sm text-slate-500 dark:text-slate-400">No recent activity</p>
+              <p className="py-8 text-center text-sm text-slate-500 dark:text-slate-400">
+                No recent activity
+              </p>
             )}
           </div>
         </div>
       </section>
 
       <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-base font-semibold text-slate-950 dark:text-white">Project progress</h2>
+        <h2 className="text-base font-semibold text-slate-950 dark:text-white">
+          Project progress
+        </h2>
         <div className="mt-4 grid gap-4 lg:grid-cols-2">
           {dashboard?.projectProgress?.length ? (
             dashboard.projectProgress.map((project) => (
-              <div key={project._id} className="rounded-lg border border-slate-200 p-4 dark:border-slate-700">
+              <div
+                key={project._id}
+                className="rounded-lg border border-slate-200 p-4 dark:border-slate-700"
+              >
                 <div className="mb-3 flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold text-slate-950 dark:text-white">{project.title}</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Due {formatDate(project.deadline)}</p>
+                    <p className="truncate text-sm font-semibold text-slate-950 dark:text-white">
+                      {project.title}
+                    </p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      Due {formatDate(project.deadline)}
+                    </p>
                   </div>
-                  <span className="text-sm font-medium text-slate-600 dark:text-slate-300">{project.progress}%</span>
+                  <span className="text-sm font-medium text-slate-600 dark:text-slate-300">
+                    {project.progress}%
+                  </span>
                 </div>
                 <ProgressBar value={project.progress} />
               </div>
             ))
           ) : (
-            <p className="text-sm text-slate-500 dark:text-slate-400">No projects yet</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              No projects yet
+            </p>
           )}
         </div>
       </section>

@@ -1,18 +1,18 @@
-import { CalendarDays, Plus, Users } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { toast } from 'sonner';
-import { TaskFormModal } from '../components/tasks/TaskFormModal';
-import { TaskCard } from '../components/tasks/TaskCard';
-import { EmptyState } from '../components/ui/EmptyState';
-import { LoadingSpinner } from '../components/ui/LoadingSpinner';
-import { ProgressBar } from '../components/ui/ProgressBar';
-import { Badge } from '../components/ui/Badge';
-import { Button } from '../components/ui/Button';
-import { useAuth } from '../contexts/AuthContext';
-import { usePageTitle } from '../hooks/usePageTitle';
-import { api, getErrorMessage } from '../services/api';
-import { formatDate } from '../utils/formatters';
+import { CalendarDays, Plus, Users } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { toast } from "sonner";
+import { TaskFormModal } from "../components/tasks/TaskFormModal";
+import { TaskCard } from "../components/tasks/TaskCard";
+import { EmptyState } from "../components/ui/EmptyState";
+import { LoadingSpinner } from "../components/ui/LoadingSpinner";
+import { ProgressBar } from "../components/ui/ProgressBar";
+import { Badge } from "../components/ui/Badge";
+import { Button } from "../components/ui/Button";
+import { useAuth } from "../contexts/AuthContext";
+import { usePageTitle } from "../hooks/usePageTitle";
+import { api, getErrorMessage } from "../services/api";
+import { formatDate } from "../utils/formatters";
 
 export const ProjectDetailPage = () => {
   const { id } = useParams();
@@ -22,15 +22,16 @@ export const ProjectDetailPage = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [taskModalOpen, setTaskModalOpen] = useState(false);
-  usePageTitle(project?.title || 'Project');
+  usePageTitle(project?.title || "Project");
 
   const fetchProject = async () => {
     try {
-      const [{ data: projectData }, { data: taskData }, { data: teamData }] = await Promise.all([
-        api.get(`/projects/${id}`),
-        api.get('/tasks', { params: { project: id, limit: 100 } }),
-        api.get('/team')
-      ]);
+      const [{ data: projectData }, { data: taskData }, { data: teamData }] =
+        await Promise.all([
+          api.get(`/projects/${id}`),
+          api.get("/tasks", { params: { project: id, limit: 100 } }),
+          api.get("/team"),
+        ]);
       setProject(projectData.data.project);
       setTasks(taskData.data.tasks);
       setUsers(teamData.data.users);
@@ -53,8 +54,10 @@ export const ProjectDetailPage = () => {
     return <EmptyState title="Project not found" />;
   }
 
-  const completed = tasks.filter((task) => task.status === 'Done').length;
-  const progress = tasks.length ? Math.round((completed / tasks.length) * 100) : 0;
+  const completed = tasks.filter((task) => task.status === "Done").length;
+  const progress = tasks.length
+    ? Math.round((completed / tasks.length) * 100)
+    : 0;
 
   return (
     <div className="space-y-5">
@@ -72,8 +75,12 @@ export const ProjectDetailPage = () => {
                 {project.members?.length || 0} members
               </span>
             </div>
-            <h2 className="text-2xl font-semibold text-slate-950 dark:text-white">{project.title}</h2>
-            <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-500 dark:text-slate-400">{project.description || 'No description'}</p>
+            <h2 className="text-2xl font-semibold text-slate-950 dark:text-white">
+              {project.title}
+            </h2>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-500 dark:text-slate-400">
+              {project.description || "No description"}
+            </p>
           </div>
           {isAdmin ? (
             <Button icon={Plus} onClick={() => setTaskModalOpen(true)}>
@@ -83,7 +90,9 @@ export const ProjectDetailPage = () => {
         </div>
         <div className="mt-5">
           <div className="mb-2 flex justify-between text-sm text-slate-500 dark:text-slate-400">
-            <span>{completed} of {tasks.length} tasks completed</span>
+            <span>
+              {completed} of {tasks.length} tasks completed
+            </span>
             <span>{progress}%</span>
           </div>
           <ProgressBar value={progress} />
@@ -104,11 +113,23 @@ export const ProjectDetailPage = () => {
           ))}
         </section>
       ) : (
-        <EmptyState title="No tasks yet" action={isAdmin ? <Button icon={Plus} onClick={() => setTaskModalOpen(true)}>Create task</Button> : null} />
+        <EmptyState
+          title="No tasks yet"
+          action={
+            isAdmin ? (
+              <Button icon={Plus} onClick={() => setTaskModalOpen(true)}>
+                Create task
+              </Button>
+            ) : null
+          }
+        />
       )}
 
       <div>
-        <Link to="/projects" className="text-sm font-medium text-slate-600 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white">
+        <Link
+          to="/projects"
+          className="text-sm font-medium text-slate-600 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white"
+        >
           Back to projects
         </Link>
       </div>
