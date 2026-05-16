@@ -25,7 +25,7 @@ export const fromNow = (date) => {
 };
 
 export const isPastDue = (date, status) => {
-  if (!date || status === 'Completed') {
+  if (!date || status === 'Done' || status === 'Completed') {
     return false;
   }
 

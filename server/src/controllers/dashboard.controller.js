@@ -1,7 +1,7 @@
 import { Activity } from '../models/Activity.js';
 import { Project } from '../models/Project.js';
 import { Task } from '../models/Task.js';
-import { TASK_PRIORITIES, TASK_STATUSES } from '../utils/constants.js';
+import { TASK_PRIORITIES, TASK_STATUS_OPTIONS, normalizeTaskStatus } from '../utils/constants.js';
 import {
   getAccessibleProjectIds,
   getProjectAccessFilter
@@ -12,7 +12,10 @@ import { refreshOverdueTasks } from '../services/task.service.js';
 const normalizeCounts = (items, keys) => {
   const map = Object.fromEntries(keys.map((key) => [key, 0]));
   items.forEach((item) => {
-    map[item._id] = item.count;
+    const status = normalizeTaskStatus(item._id);
+    if (status in map) {
+      map[status] += item.count;
+    }
   });
   return Object.entries(map).map(([name, value]) => ({ name, value }));
 };
@@ -49,7 +52,7 @@ export const getDashboard = asyncHandler(async (req, res) => {
   ] = await Promise.all([
     Project.countDocuments(projectFilter),
     Task.countDocuments(taskFilter),
-    Task.countDocuments({ ...taskFilter, status: 'Completed' }),
+    Task.countDocuments({ ...taskFilter, status: { $in: ['Done', 'Completed'] } }),
     Task.countDocuments({ ...taskFilter, status: 'Overdue' }),
     Task.aggregate([{ $match: taskFilter }, { $group: { _id: '$status', count: { $sum: 1 } } }]),
     Task.aggregate([{ $match: taskFilter }, { $group: { _id: '$priority', count: { $sum: 1 } } }]),
@@ -57,7 +60,7 @@ export const getDashboard = asyncHandler(async (req, res) => {
       {
         $match: {
           ...taskFilter,
-          status: 'Completed',
+          status: { $in: ['Done', 'Completed'] },
           updatedAt: { $gte: startOfWeek }
         }
       },
@@ -95,7 +98,10 @@ export const getDashboard = asyncHandler(async (req, res) => {
   const projectProgress = projects.map((project) => {
     const rows = projectTaskCounts.filter((item) => item._id.project.toString() === project._id.toString());
     const total = rows.reduce((sum, item) => sum + item.count, 0);
-    const completed = rows.find((item) => item._id.status === 'Completed')?.count || 0;
+    const completed = rows.reduce((sum, item) => {
+      const status = normalizeTaskStatus(item._id.status);
+      return status === 'Done' ? sum + item.count : sum;
+    }, 0);
 
     return {
       _id: project._id,
@@ -134,7 +140,7 @@ export const getDashboard = asyncHandler(async (req, res) => {
         completionRate
       },
       charts: {
-        statusBreakdown: normalizeCounts(statusCounts, TASK_STATUSES),
+        statusBreakdown: normalizeCounts(statusCounts, [...TASK_STATUS_OPTIONS, 'Overdue']),
         priorityBreakdown: normalizeCounts(priorityCounts, TASK_PRIORITIES),
         weeklyProductivity
       },

@@ -53,7 +53,7 @@ export const ProjectDetailPage = () => {
     return <EmptyState title="Project not found" />;
   }
 
-  const completed = tasks.filter((task) => task.status === 'Completed').length;
+  const completed = tasks.filter((task) => task.status === 'Done').length;
   const progress = tasks.length ? Math.round((completed / tasks.length) * 100) : 0;
 
   return (

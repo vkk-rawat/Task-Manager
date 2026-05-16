@@ -73,7 +73,7 @@ export const DashboardPage = () => {
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <StatCard title="Projects" value={summary.totalProjects || 0} icon={FolderKanban} tone="sky" />
         <StatCard title="Total tasks" value={summary.totalTasks || 0} icon={ListTodo} />
-        <StatCard title="Completed" value={summary.completedTasks || 0} icon={CheckCircle2} tone="emerald" />
+        <StatCard title="Done" value={summary.completedTasks || 0} icon={CheckCircle2} tone="emerald" />
         <StatCard title="Pending" value={summary.pendingTasks || 0} icon={TrendingUp} tone="amber" />
         <StatCard title="Overdue" value={summary.overdueTasks || 0} icon={AlertTriangle} tone="rose" />
       </section>

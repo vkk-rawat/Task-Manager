@@ -5,9 +5,10 @@ import { User } from '../models/User.js';
 import { createActivity } from '../services/activity.service.js';
 import { createNotification } from '../services/notification.service.js';
 import { emitToProject } from '../services/socket.service.js';
-import { populateTask, refreshOverdueTasks } from '../services/task.service.js';
+import { normalizeTaskDoc, populateTask, refreshOverdueTasks } from '../services/task.service.js';
 import { ApiError } from '../utils/ApiError.js';
 import { projectContainsUser, sameId } from '../utils/access.js';
+import { getTaskStatusFilterValues, normalizeTaskStatus } from '../utils/constants.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 
 const populateTaskDoc = (task) =>
@@ -113,7 +114,7 @@ export const getTasks = asyncHandler(async (req, res) => {
   }
 
   if (status) {
-    filter.status = status;
+    filter.status = { $in: getTaskStatusFilterValues(status) };
   }
 
   if (priority) {
@@ -132,6 +133,8 @@ export const getTasks = asyncHandler(async (req, res) => {
     populateTask(Task.find(filter).sort(sort).skip(skip).limit(limit)),
     Task.countDocuments(filter)
   ]);
+
+  tasks.forEach((task) => normalizeTaskDoc(task));
 
   res.json({
     success: true,
@@ -159,6 +162,8 @@ export const getTaskById = asyncHandler(async (req, res) => {
   if (!canReadTask(task, req.user)) {
     throw new ApiError(403, 'You do not have access to this task');
   }
+
+  normalizeTaskDoc(task);
 
   res.json({
     success: true,
@@ -199,6 +204,10 @@ export const updateTask = asyncHandler(async (req, res) => {
     }
   }
 
+  if (req.body.status) {
+    req.body.status = normalizeTaskStatus(req.body.status);
+  }
+
   const previousStatus = task.status;
   const previousAssignee = task.assignedTo;
 
@@ -226,6 +235,7 @@ export const updateTask = asyncHandler(async (req, res) => {
     });
   }
 
+  normalizeTaskDoc(task);
   await populateTaskDoc(task);
   emitToProject(task.project._id, 'task:updated', task);
 

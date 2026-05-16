@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { api, getErrorMessage } from '../../services/api';
-import { PRIORITY_OPTIONS, STATUS_OPTIONS } from '../../utils/constants';
+import { PRIORITY_OPTIONS, TASK_STATUS_OPTIONS } from '../../utils/constants';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { Modal } from '../ui/Modal';
@@ -17,7 +17,7 @@ const schema = z.object({
   description: z.string().optional(),
   project: z.string().min(1, 'Project is required'),
   assignedTo: z.string().min(1, 'Assigned member is required'),
-  status: z.enum(STATUS_OPTIONS),
+  status: z.enum(TASK_STATUS_OPTIONS),
   priority: z.enum(PRIORITY_OPTIONS),
   dueDate: z.string().min(1, 'Due date is required'),
   attachmentName: z.string().optional(),
@@ -40,7 +40,7 @@ export const TaskFormModal = ({ open, onClose, task, projects = [], users = [], 
       description: '',
       project: '',
       assignedTo: '',
-      status: 'Todo',
+      status: 'To Do',
       priority: 'Medium',
       dueDate: '',
       attachmentName: '',
@@ -57,7 +57,7 @@ export const TaskFormModal = ({ open, onClose, task, projects = [], users = [], 
         description: task.description || '',
         project: task.project?._id || task.project || '',
         assignedTo: task.assignedTo?._id || task.assignedTo || '',
-        status: task.status || 'Todo',
+        status: task.status || 'To Do',
         priority: task.priority || 'Medium',
         dueDate: formatDateInput(task.dueDate),
         attachmentName: task.attachments?.[0]?.name || '',
@@ -69,7 +69,7 @@ export const TaskFormModal = ({ open, onClose, task, projects = [], users = [], 
         description: '',
         project: projects[0]?._id || '',
         assignedTo: '',
-        status: 'Todo',
+        status: 'To Do',
         priority: 'Medium',
         dueDate: '',
         attachmentName: '',
@@ -148,7 +148,7 @@ export const TaskFormModal = ({ open, onClose, task, projects = [], users = [], 
         </div>
         <div className="grid gap-4 md:grid-cols-3">
           <Select label="Status" error={errors.status?.message} {...register('status')}>
-            {STATUS_OPTIONS.map((status) => (
+            {TASK_STATUS_OPTIONS.map((status) => (
               <option key={status} value={status}>
                 {status}
               </option>

@@ -1,4 +1,5 @@
 import { Task } from '../models/Task.js';
+import { normalizeTaskStatus } from '../utils/constants.js';
 
 export const refreshOverdueTasks = async (extraFilter = {}) => {
   const now = new Date();
@@ -6,7 +7,7 @@ export const refreshOverdueTasks = async (extraFilter = {}) => {
   return Task.updateMany(
     {
       ...extraFilter,
-      status: { $nin: ['Completed', 'Overdue'] },
+      status: { $nin: ['Done', 'Completed', 'Overdue'] },
       dueDate: { $lt: now }
     },
     { $set: { status: 'Overdue' } }
@@ -26,3 +27,12 @@ export const populateTask = (query) =>
         select: 'name email role avatar'
       }
     });
+
+export const normalizeTaskDoc = (task) => {
+  if (!task) {
+    return task;
+  }
+
+  task.status = normalizeTaskStatus(task.status);
+  return task;
+};

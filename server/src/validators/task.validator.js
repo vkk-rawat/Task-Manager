@@ -14,7 +14,7 @@ export const createTaskSchema = z.object({
   description: z.string().trim().max(3000).optional().default(''),
   assignedTo: objectId,
   project: objectId,
-  status: z.enum(TASK_STATUSES).optional().default('Todo'),
+  status: z.enum(TASK_STATUSES).optional().default('To Do'),
   priority: z.enum(TASK_PRIORITIES).default('Medium'),
   dueDate: requiredDate,
   attachments: z.array(attachmentSchema).optional().default([])
