@@ -21,6 +21,22 @@ export const TeamPage = () => {
   const [userId, setUserId] = useState('');
   usePageTitle('Team');
 
+  const selectedProject = useMemo(
+    () => projects.find((project) => project._id === projectId),
+    [projectId, projects]
+  );
+
+  const selectedProjectMembers = useMemo(() => {
+    if (!selectedProject) {
+      return [];
+    }
+
+    const ownerId = selectedProject.owner?._id || selectedProject.owner;
+    const memberIds = new Set([...(selectedProject.members || []).map((member) => member._id || member)]);
+
+    return users.filter((user) => user._id === ownerId || memberIds.has(user._id));
+  }, [selectedProject, users]);
+
   const fetchData = async () => {
     try {
       const [{ data: teamData }, { data: projectData }] = await Promise.all([
@@ -75,6 +91,21 @@ export const TeamPage = () => {
     }
   };
 
+  const handleRemoveProjectMember = async (memberId) => {
+    if (!projectId || !memberId) {
+      return;
+    }
+
+    try {
+      await api.delete('/team/remove-member', { data: { projectId, userId: memberId } });
+      toast.success('Member removed');
+      fetchData();
+      setUserId('');
+    } catch (error) {
+      toast.error(getErrorMessage(error));
+    }
+  };
+
   if (loading) {
     return <LoadingSpinner label="Loading team" />;
   }
@@ -106,6 +137,52 @@ export const TeamPage = () => {
               Remove
             </Button>
           </div>
+        </section>
+      ) : null}
+
+      {isAdmin && selectedProject ? (
+        <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 className="text-base font-semibold text-slate-950 dark:text-white">Project members</h2>
+              <p className="text-sm text-slate-500 dark:text-slate-400">{selectedProject.title}</p>
+            </div>
+            <span className="text-sm text-slate-500 dark:text-slate-400">{selectedProjectMembers.length} members</span>
+          </div>
+
+          {selectedProjectMembers.length ? (
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {selectedProjectMembers.map((member) => {
+                const isOwner = (selectedProject.owner?._id || selectedProject.owner) === member._id;
+
+                return (
+                  <article key={member._id} className="rounded-lg border border-slate-200 p-4 dark:border-slate-700">
+                    <div className="flex items-center gap-3">
+                      <Avatar user={member} size="lg" />
+                      <div className="min-w-0">
+                        <h3 className="truncate text-sm font-semibold text-slate-950 dark:text-white">{member.name}</h3>
+                        <p className="truncate text-xs text-slate-500 dark:text-slate-400">{member.email}</p>
+                      </div>
+                    </div>
+                    <div className="mt-4 flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+                        {member.role === 'admin' ? <ShieldCheck className="h-4 w-4 text-emerald-500" /> : <UserRound className="h-4 w-4" />}
+                        <span>{member.role}</span>
+                        {isOwner ? <span className="text-xs text-slate-400">owner</span> : null}
+                      </div>
+                      {!isOwner ? (
+                        <Button variant="secondary" size="sm" icon={MinusCircle} onClick={() => handleRemoveProjectMember(member._id)}>
+                          Remove
+                        </Button>
+                      ) : null}
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          ) : (
+            <EmptyState title="No project members" message="Add a user to this project to see them here." />
+          )}
         </section>
       ) : null}
 
