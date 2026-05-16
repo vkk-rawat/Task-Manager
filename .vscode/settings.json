@@ -7,6 +7,10 @@
     "/^cd \"C:\\\\Users\\\\Vivek Rawat\\\\Desktop\\\\full-stack-assessment\" ; git remote set-url origin https://github\\.com/vkk-rawat/Task-Manager\\.git$/": {
       "approve": true,
       "matchCommandLine": true
+    },
+    "/^cd \"C:\\\\Users\\\\Vivek Rawat\\\\Desktop\\\\full-stack-assessment\" ; git add FUNCTIONAL_REQUIREMENTS_ANALYSIS\\.md ; git commit -m \"docs: add comprehensive functional requirements analysis\" ; git push origin main$/": {
+      "approve": true,
+      "matchCommandLine": true
     }
   }
 }
