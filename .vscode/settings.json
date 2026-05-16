@@ -3,6 +3,10 @@
     "/^Set-Location \\.\\\\client; \\$env:VITE_API_URL='http://localhost:5001/api'; \\$env:VITE_SOCKET_URL='http://localhost:5001'; node \\.\\.\\\\node_modules\\\\vite\\\\bin\\\\vite\\.js --host 0\\.0\\.0\\.0$/": {
       "approve": true,
       "matchCommandLine": true
+    },
+    "/^cd \"C:\\\\Users\\\\Vivek Rawat\\\\Desktop\\\\full-stack-assessment\" ; git remote set-url origin https://github\\.com/vkk-rawat/Task-Manager\\.git$/": {
+      "approve": true,
+      "matchCommandLine": true
     }
   }
 }
